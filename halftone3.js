@@ -8,7 +8,7 @@ let multiplier;
 let thresholdSlider;
 
 let images = []; // Array to store multiple images
-let numImages = 3; // Number of images
+let numImages = 10; // Number of images
 let imageAssignments = []; // Array to store image assignments for each point on the grid
 
 function preload() {
@@ -62,8 +62,8 @@ function draw() {
 			b = camera.pixels[i + 2];
 			if (r + g + b < thresholdSlider.value()) {
 				let diameter = r + g + b;
-				let diameterMapped = map(diameter, 0, 765, 0, 18);
-				let diameterActual = 18 - diameterMapped;
+				let diameterMapped = map(diameter, 0, 765, 0, 20);
+				let diameterActual = 20 - diameterMapped;
 
 				// Retrieve the pre-assigned image for this point
 				let index = floor(x / sampleSize) + floor(y / sampleSize) * ceil(camWidth / sampleSize);
