@@ -8,7 +8,7 @@ let multiplier;
 let thresholdSlider;
 
 let images = []; // Array to store multiple images
-let numImages = 10; // Number of images
+let numImages = 18; // Number of images
 let imageAssignments = []; // Array to store image assignments for each point on the grid
 
 function preload() {
