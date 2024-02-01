@@ -1,5 +1,5 @@
 let camera;
-let sampleSize = 5;
+let sampleSize = 4;
 let camWidth = 320;
 let camHeight = 240;
 let proportion = camWidth / camHeight;
@@ -7,10 +7,14 @@ let threshold;
 let multiplier;
 let thresholdSlider;
 
-let jordan;
+let images = []; // Array to store multiple images
+let numImages = 3; // Number of images
+let imageAssignments = []; // Array to store image assignments for each point on the grid
 
 function preload() {
-	jordan = loadImage('assets/shoe1.png');
+	for (let i = 1; i <= numImages; i++) {
+		images.push(loadImage('assets/shoe' + i + '.png')); // Load images and add to the array;
+	}
 }
 
 function setup() {
@@ -32,6 +36,15 @@ function setup() {
 	//use a monospace font
 	textFont('arial');
 	textSize(sampleSize * multiplier);
+
+	// Generate random image assignments for each point on the grid
+	for (let y = 0; y < ceil(camHeight / sampleSize); y++) {
+		for (let x = 0; x < ceil(camWidth / sampleSize); x++) {
+			let randomIndex = floor(random(images.length));
+			imageAssignments.push(images[randomIndex]);
+		}
+	}
+
 }
 
 let i, r, g, b, rSize, gSize, bSize;
@@ -49,17 +62,19 @@ function draw() {
 			b = camera.pixels[i + 2];
 			if (r + g + b < thresholdSlider.value()) {
 				let diameter = r + g + b;
-				let diameterMapped = map(diameter, 0, 765, 0, 20);
-				let diameterActual = 20 - diameterMapped;
+				let diameterMapped = map(diameter, 0, 765, 0, 18);
+				let diameterActual = 18 - diameterMapped;
 
-				let aspectRatio = jordan.width / jordan.height;
+				// Retrieve the pre-assigned image for this point
+				let index = floor(x / sampleSize) + floor(y / sampleSize) * ceil(camWidth / sampleSize);
+				let assignedImage = imageAssignments[index];
+		
+				let aspectRatio = assignedImage.width / assignedImage.height;
 				let imgWidth = diameterActual;
 				let imgHeight = diameterActual / aspectRatio;
-
-				// Rotate by a random angle
-
+		
 				// Display the resized image
-				image(jordan, x * multiplier, y * multiplier, imgWidth, imgHeight);
+				image(assignedImage, x * multiplier, y * multiplier, imgWidth, imgHeight);
 			}
 		}
 	}
