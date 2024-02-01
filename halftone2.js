@@ -1,5 +1,5 @@
 let camera;
-let sampleSize = 3;
+let sampleSize = 5;
 let camWidth = 320;
 let camHeight = 240;
 let proportion = camWidth / camHeight;
@@ -9,7 +9,7 @@ let thresholdSlider;
 
 let jordan;
 
-function preload(){
+function preload() {
 	jordan = loadImage('assets/jordan1.png');
 }
 
@@ -32,7 +32,6 @@ function setup() {
 	//use a monospace font
 	textFont('arial');
 	textSize(sampleSize * multiplier);
-	print(message);
 }
 
 let i, r, g, b, rSize, gSize, bSize;
@@ -52,10 +51,13 @@ function draw() {
 				let diameter = r + g + b;
 				let diameterMapped = map(diameter, 0, 765, 0, 20);
 				let diameterActual = 20 - diameterMapped;
-				push();
-				fill(0, 8, 50);
-				ellipse(x * multiplier, y * multiplier, diameterActual, diameterActual);
-				pop();
+
+				let aspectRatio = jordan.width / jordan.height;
+				let imgWidth = diameterActual;
+				let imgHeight = diameterActual / aspectRatio;
+
+				// Display the resized image
+				image(jordan, x * multiplier, y * multiplier, imgWidth, imgHeight);
 			}
 		}
 	}
