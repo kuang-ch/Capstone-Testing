@@ -32,7 +32,6 @@ function setup() {
 	//use a monospace font
 	textFont('arial');
 	textSize(sampleSize * multiplier);
-	print(message);
 }
 
 let i, r, g, b, rSize, gSize, bSize;
