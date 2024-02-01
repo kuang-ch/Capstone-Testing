@@ -1,5 +1,5 @@
 let camera;
-let sampleSize = 2;
+let sampleSize = 3;
 let camWidth = 320;
 let camHeight = 240;
 let proportion = camWidth / camHeight;
@@ -47,8 +47,8 @@ function draw() {
 			b = camera.pixels[i + 2];
 			if (r + g + b < thresholdSlider.value()) {
 				let diameter = r + g + b;
-				let diameterMapped = map(diameter, 0, 765, 0, 12);
-				let diameterActual = 12 - diameterMapped;
+				let diameterMapped = map(diameter, 0, 765, 0, 20);
+				let diameterActual = 20 - diameterMapped;
 				push();
 				fill(0, 8, 50);
 				ellipse(x * multiplier, y * multiplier, diameterActual, diameterActual);
