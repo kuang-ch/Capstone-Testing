@@ -1,6 +1,6 @@
 let camera;
 let sampleSize = 4;
-let camWidth = 550;
+let camWidth = 545;
 let camHeight = 300;
 let proportion = camWidth / camHeight;
 let threshold;
@@ -16,6 +16,8 @@ function preload() {
 		images.push(loadImage('assets/shoe' + i + '.png')); // Load images and add to the array;
 	}
 }
+
+let useCustomDraw = true; // Boolean variable to toggle custom draw function
 
 function setup() {
 	camera = createCapture(VIDEO);
@@ -45,43 +47,55 @@ function setup() {
 		}
 	}
 
+	// Add a button to toggle draw function
+	let toggleButton = createButton('Toggle');
+	toggleButton.position(width - 100, height - 50);
+	toggleButton.mousePressed(toggleDrawFunction);
 }
 
 let i, r, g, b, rSize, gSize, bSize;
 let contrastFactor = 1;  //Contrast factor
 
+function toggleDrawFunction() {
+	useCustomDraw = !useCustomDraw; // Toggle the boolean variable
+}
+
 function draw() {
 	background(200);
 	camera.loadPixels();
 	//create a grid of nested circles
-	for (let y = 0; y < camera.height; y += sampleSize) {
-		for (let x = 0; x < camera.width; x += sampleSize) {
-			i = ((y * camera.width) + x) * 4;
-			let r = camera.pixels[i] * contrastFactor;
-            let g = camera.pixels[i + 1] * contrastFactor;
-            let b = camera.pixels[i + 2] * contrastFactor;
+	if (useCustomDraw) {
+		for (let y = 0; y < camera.height; y += sampleSize) {
+			for (let x = 0; x < camera.width; x += sampleSize) {
+				i = ((y * camera.width) + x) * 4;
+				let r = camera.pixels[i] * contrastFactor;
+				let g = camera.pixels[i + 1] * contrastFactor;
+				let b = camera.pixels[i + 2] * contrastFactor;
 
-            // Ensure values are within the valid range (0 to 255)
-            r = constrain(r, 0, 255);
-            g = constrain(g, 0, 255);
-            b = constrain(b, 0, 255);
+				// Ensure values are within the valid range (0 to 255)
+				r = constrain(r, 0, 255);
+				g = constrain(g, 0, 255);
+				b = constrain(b, 0, 255);
 
-			if (r + g + b < thresholdSlider.value()) {
-				let diameter = r + g + b;
-				let diameterMapped = map(diameter, 0, 765, 0, 20);
-				let diameterActual = 20 - diameterMapped;
+				if (r + g + b < thresholdSlider.value()) {
+					let diameter = r + g + b;
+					let diameterMapped = map(diameter, 0, 765, 0, 20);
+					let diameterActual = 20 - diameterMapped;
 
-				// Retrieve the pre-assigned image for this point
-				let index = floor(x / sampleSize) + floor(y / sampleSize) * ceil(camWidth / sampleSize);
-				let assignedImage = imageAssignments[index];
-		
-				let aspectRatio = assignedImage.width / assignedImage.height;
-				let imgWidth = diameterActual;
-				let imgHeight = diameterActual / aspectRatio;
-		
-				// Display the resized image
-				image(assignedImage, x * multiplier, y * multiplier, imgWidth, imgHeight);
+					// Retrieve the pre-assigned image for this point
+					let index = floor(x / sampleSize) + floor(y / sampleSize) * ceil(camWidth / sampleSize);
+					let assignedImage = imageAssignments[index];
+
+					let aspectRatio = assignedImage.width / assignedImage.height;
+					let imgWidth = diameterActual;
+					let imgHeight = diameterActual / aspectRatio;
+
+					// Display the resized image
+					image(assignedImage, x * multiplier, y * multiplier, imgWidth, imgHeight);
+				}
 			}
 		}
+	} else {// Display raw camera capture
+		image(camera, 0, 0, width, height);
 	}
 }
