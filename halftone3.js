@@ -1,7 +1,7 @@
 let camera;
 let sampleSize = 4;
-let camWidth = 320;
-let camHeight = 240;
+let camWidth = 550;
+let camHeight = 300;
 let proportion = camWidth / camHeight;
 let threshold;
 let multiplier;
@@ -48,18 +48,24 @@ function setup() {
 }
 
 let i, r, g, b, rSize, gSize, bSize;
+let contrastFactor = 1;  //Contrast factor
 
 function draw() {
-	messageIndex = 0;
-	background(255);
+	background(200);
 	camera.loadPixels();
 	//create a grid of nested circles
 	for (let y = 0; y < camera.height; y += sampleSize) {
 		for (let x = 0; x < camera.width; x += sampleSize) {
 			i = ((y * camera.width) + x) * 4;
-			r = camera.pixels[i];
-			g = camera.pixels[i + 1];
-			b = camera.pixels[i + 2];
+			let r = camera.pixels[i] * contrastFactor;
+            let g = camera.pixels[i + 1] * contrastFactor;
+            let b = camera.pixels[i + 2] * contrastFactor;
+
+            // Ensure values are within the valid range (0 to 255)
+            r = constrain(r, 0, 255);
+            g = constrain(g, 0, 255);
+            b = constrain(b, 0, 255);
+
 			if (r + g + b < thresholdSlider.value()) {
 				let diameter = r + g + b;
 				let diameterMapped = map(diameter, 0, 765, 0, 20);
