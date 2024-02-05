@@ -1,5 +1,5 @@
 let camera;
-let sampleSize = 3;
+let sampleSize = 2;
 let camWidth = 320;
 let camHeight = 240;
 let proportion = camWidth / camHeight;

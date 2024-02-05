@@ -7,12 +7,6 @@ let threshold;
 let multiplier;
 let thresholdSlider;
 
-let jordan;
-
-function preload(){
-	jordan = loadImage('assets/jordan1.png');
-}
-
 function setup() {
 	camera = createCapture(VIDEO);
 	camera.size(camWidth, camHeight);
