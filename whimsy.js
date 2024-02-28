@@ -1,55 +1,128 @@
-let camera;
-let sampleSize = 3;
-let camWidth = 320;
-let camHeight = 240;
-let proportion = camWidth / camHeight;
-let threshold;
-let multiplier;
-let thresholdSlider;
+let gWorld;
+let gBlob;
+let gRadius = 90;
+let scaleFactor;
+let gDamping = 0.6;
+let gFrequency = 0.01;
+let gBgColor = '#f4f1ea';
+let gBlobColor = '#3567af';
+let gTime;
 
 function setup() {
-	camera = createCapture(VIDEO);
-	camera.size(camWidth, camHeight);
-	camera.hide();
+	createCanvas(200, 200);
+	background(0);
+	gWorld = new c2.World(new c2.Rect(0, 0, width, height));
 
-	//halfway point for colors
-	threshold = round((255 * 3) / 2);
-	if (windowHeight < windowWidth) {
-		createCanvas(round(windowHeight * proportion), windowHeight);
-	} else {
-		createCanvas(windowWidth, round(windowHeight * (1 / proportion)));
-	}
-	multiplier = width / camWidth;
-	noStroke();
-	thresholdSlider = createSlider(0, 765, threshold);
-	thresholdSlider.position((width / 2) - (thresholdSlider.width / 2), height - 40);
-	//use a monospace font
-	textFont('arial');
-	textSize(sampleSize * multiplier);
+	let centerX = width / 2;
+	let centerY = height / 2;
+	let scaleFactor = random(0.7, 1);
+	console.log(gRadius);
+	console.log(scaleFactor);
+	createBlob(centerX, centerY, scaleFactor);
+
+	//addWorldForces();
+	init();
+
+	strokeWeight(5);
 }
 
-let i, r, g, b, rSize, gSize, bSize;
 
-function draw() {
-	messageIndex = 0;
-	background(255);
-	camera.loadPixels();
-	//create a grid of nested circles
-	for (let y = 0; y < camera.height; y += sampleSize) {
-		for (let x = 0; x < camera.width; x += sampleSize) {
-			i = ((y * camera.width) + x) * 4;
-			r = camera.pixels[i];
-			g = camera.pixels[i + 1];
-			b = camera.pixels[i + 2];
-			if (r + g + b < thresholdSlider.value()) {
-				let diameter = r + g + b;
-				let diameterMapped = map(diameter, 0, 765, 0, 20);
-				let diameterActual = 20 - diameterMapped;
-				push();
-				fill(0, 8, 50);
-				ellipse(x * multiplier, y * multiplier, diameterActual, diameterActual);
-				pop();
-			}
-		}
-	}
-}
+// function mouseClicked() {
+// 	init();
+// }
+
+// function draw() {
+// 	background(gBgColor);
+
+// 	gWorld.update();
+
+// 	gBlob.update();
+// 	gBlob.draw();
+
+// 	gTime += 1;
+// }
+
+// function init() {
+// 	clearForces();
+// 	let centerX = width / 2;
+// 	let centerY = height / 2;
+
+// 	let scaleFactor = random(0.7, 1);
+// 	createBlob(centerX, centerY, scaleFactor);
+
+// 	gTime = 0;
+// }
+
+// function createBlob(posX, posY, scaleFactor) {
+// 	gBlob = new Blob(new c2.Vector(posX, posY), scaleFactor);
+// }
+
+// class Blob {
+// 	constructor(pos, scaleFactor) {
+// 		this.allPoints = [];
+// 		this.springs = [];
+// 		this.color = gBlobColor;
+// 		this.radius = gRadius * scaleFactor;
+// 		console.log(scaleFactor);
+// 		this.frequency = gFrequency;
+// 		this.createBody(pos);
+// 	}
+
+// 	update() {
+// 		const amplitude = 0.2 * this.radius;
+// 		const timeFactor = min(gTime * this.frequency, 1);
+// 		const expansionFactor = timeFactor * amplitude;
+
+// 		for (let i = 0; i < this.allPoints.length; i++) {
+// 			const point = this.allPoints[i];
+// 			point.radius = 1.5 * expansionFactor;
+// 			for (let j = 0; j < this.springs.length; j++) {
+// 				const spring = this.springs[j];
+// 				spring.s.length = spring.l * expansionFactor * gDamping;
+// 			}
+// 		}
+// 	}
+
+// 	createBody(pos) {
+// 		const count = floor(this.radius);
+// 		const angInc = TWO_PI / count;
+
+// 		for (let i = 0; i < count; i++) {
+// 			const angle = i * angInc;
+// 			const x = this.radius * cos(angle) + pos.x;
+// 			const y = this.radius * sin(angle) + pos.y;
+// 			this.allPoints.push(this.createParticle(x, y));
+// 		}
+
+// 		for (let i = 0; i < count; i++) {
+// 			const currentPoint = this.allPoints[i];
+// 			const nextIndex = (i + 1) % count;
+// 			const nextPoint = this.allPoints[nextIndex];
+// 			this.createSpring(currentPoint, nextPoint);
+// 		}
+// 	}
+
+// 	createParticle(posX, posY) {
+// 		let p = new c2.Particle(posX, posY);
+// 		gWorld.addParticle(p);
+// 		return p;
+// 	}
+
+// 	createSpring(p1, p2) {
+// 		let spring = new c2.Spring(p1, p2);
+// 		spring.length = dist(p1.position.x, p1.position.y, p2.position.x, p2.position.y);
+// 		spring.range(0.6 * spring.length, 50 * spring.length);
+// 		gWorld.addSpring(spring);
+// 		this.springs.push({ s: spring, l: spring.length });
+// 	}
+
+// 	draw() {
+// 		beginShape();
+// 		for (let point of this.allPoints) {
+// 			curveVertex(point.position.x, point.position.y);
+// 		}
+// 		stroke(this.color);
+// 		fill(this.color);
+// 		endShape(CLOSE);
+// 	}
+// }
