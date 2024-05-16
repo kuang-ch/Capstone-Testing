@@ -12,7 +12,7 @@ let words; // This will store the array of words
 let wordsArray = [];
 
 function preload() {
-	// Load the CSV file during preload
+	 // Load the CSV file during preload
 	words = loadTable('assets/words.csv'
     , 'csv', 'header', () => {
       for (let row of words.rows) {
